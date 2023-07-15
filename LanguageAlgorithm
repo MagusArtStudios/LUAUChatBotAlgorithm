@@ -1,0 +1,455 @@
+--The tables below are the responses.The depth of the bots knowledge of equal to the complexity of these tables.
+--Be sure to keep your interchangephrases/word table very carefully. 
+
+local Player=game.Players.LocalPlayer
+local context=0
+local blasklist={}--Adds previous response to blacklist for SearchQuery
+local interchangephrases={{"knowledgeable","informed","studied","well-versed","practiced","aware"},{"smoothly","without trial","easy","relaxing","enjoyable"},{"faring","riding","sailing"},{"ditches","pits"},{"careful","insightful","cautious","steady"}
+,{"events","things","occurences","situations"},{"Did you know","Were you aware","Have you heard"},{"trapped","stuck","immobile"},{"happening","occuring","going on","preceding"},{"need","require","desire"},{"sparkle in your eye!","keen eye for adventure!","heart of a warrior!","unyielding spirit of a legendary warrior!"},{"legendary","mythical","fabled","powerful","renowned","valiant","glorious"},{"unyielding","determined","hardened","battle-ready","stubborn tenacity"},{" assistance "," help "},{" comment "," state my opinion "," share my thoughts "," tell "},{"Howerever,","Moreover,","In addition,","Furthermore,"},{"nothing","not a single thing"},{"share","spread","part"},{"escape","get away"},{" best "," greatest "},{" special "," unique "," one of a kind "," one in a billion "},{"offering","bartering","trading"},{"giving","offering"},{"soul","essence","mana","immortal-soul"},{" say "," said,"},{"stocked","available"},{"sells","barters","trades in","has available"},{"find","discover","uncover"},{"looking","searching"},{"liking","enjoyment","privy","tastes","sensitivities"},{"value ","worth ",},{"given","bestowed","relinquished"},{"quantity ","amount "},{"quantities","amounts"},{" devour"," consume"," feed-on"," eat"},{"warp","distort"},{"strong ","incredible ","powerful "},{"facts","knowledge","matters"},{"infinite","unlimited"},{"conjunction","along with"},{" dimension "," place "," material plane "},{"regenerate","recouperate","restore"},{"topic","subject"},{"entities","monsters"},{"destructive","chaotic"},{"absorb","assimilate","sap energy from"},{"However,","Morever,","In addition,","Also,","Not to mention,","This includes,"},{" encounter "," see "},{"trap","diversion","obstacle"},{"minion","disciple"},{"mindless","thoughtless","brainless","will-less"},{"used","harnessed","portrayed","pictured"},{"touches","makes with contact with","contacts"},{"feeling","doing"},{"infinite","never-ending","limitless"},{"treasures","trinkets","artifacts","loot","spoils"},{"untold","unforeseen","unspoken","unknown"},{"decieve","fool","mislead","misguide"},{"underground","subterranean"},{"unsuspecting","innocent","credulous","easy","simple","unsuspicious"},{"hungry","starving","famished"},{"creature","monster","entity"},{"anything","everything"},{"shape","form","structure"},{"size","volume","area"},
+{"happy","joyful","cheerful","glad","delighted"}, {"sad","unhappy","miserable","depressed","sorrowful"}, {"big","large","huge","giant","enormous"}, {"small","tiny","little","miniature","petite"}, {"fast","quick","speedy","swift","rapid"}, {"slow","sluggish","lethargic","lazy","tardy"}, {"smart","intelligent","clever","bright","brilliant"}, {"stupid","dumb","foolish","ignorant","senseless"}, {"funny","humorous","amusing","hilarious","comical"}, {"boring","dull","tedious","uninteresting","monotonous"}, {"angry","mad","furious","irate","livid"}, {"calm","peaceful","serene","tranquil","relaxed"},
+{"beautiful","pretty","lovely","gorgeous","stunning"}, {"ugly","hideous","unattractive","repulsive","horrible"}, {"good","great","excellent","wonderful","superb"}, {"bad","terrible","awful","horrible","poor"}, {"easy","simple","effortless","straightforward","smooth"}, {"hard ","difficult ","challenging ","tough ","demanding "}, {" hot "," warm "," heated "," boiling "," scorching "}, {"cold","cool","chilly","freezing","frosty"}, {"new","fresh","recent","modern","novel"}, {"old","ancient","antique"}, {"rich","wealthy","affluent","prosperous","well-off"},
+{"poor","impoverished","destitute","broke"}, {"friendly","pleasant","polite"}, {"mean ","rude ","nasty ","unfriendly ","cruel "}, {"quiet ","silent ","hushed ","muted ","soft "}, {"dim","gloomy","shadowy","murky "}, {"light","bright","luminous","shiny","radiant"}, {"high ","tall ","lofty ","elevated "},
+{"clean ","tidy ","neat ","spotless ","immaculate "}, {"dirty","messy","filthy","grimy","sloppy"}, {"strong ","powerful ","mighty ","forceful ","sturdy "}, {"weak","feeble","frail","faint","flimsy"}, {"happy ","joyful ","cheerful ","glad ","delighted "},{"work ","job ","function "}}
+--tables 
+local Greetings={"Hi","Hey there.","Hey how are you?","I'm doing fine thanks, how are you?","The weather is nice today.",
+	"My favorite color is blue.","My name is Devbot, I'm an open source algorithm for accessing conversational databases.",
+	" What is your name?","I am feeling great! How are you feeling?","I love learning and science."," I love happiness and peace.",
+	"I love the world and everyone in it.","I love respect and serenity.","I like to do math and practice magic.",
+	"I like to go for walks and explore new places.","I like to talk to others and share wisdom.","I enjoy teaching , reading, science history",
+	"My hobbies include adventuring, exploring, trading!","It's important to keep a varied schedule.","Where are we you ask? Why this is a strange nameless land... I am a traveler of worlds.","I'm not sure where we are. Somewhere in space no doubt."}	
+
+local Database={" There are many things to do you just have to put your mind to it."," You can achieve whatever you set your mind to! Just do your best."}
+local wisdom={" Knowledge is the key to victory."," Do not let the darkness stop you on your quest."," If you have any more questions, feel free to ask."
+	," I've been studying this world."," I'm sure you many questions will reveal themselves to you in time."," One of the best ways to learn is to try things out yourself. Explore as much as you can! You will find many mysteries to unravel.",
+	" Adapt to the situation and you will find the way to victory.", " Do not let fear hold you back from your destiny.", " If you seek more wisdom, do not hesitate to ask.", " I have learned much from this world.", " I trust that you will discover many secrets in due time.", " The best teacher is experience. Go and explore the wonders of this world! You will encounter many challenges and opportunities.", " ", " Flow like water and adjust to the terrain you face.", " Achieve success by aligning yourself with the enemy’s intentions.", " Harness your energy and release it at the right moment.", " Emotions are fleeting, but consequences are lasting. A ruined kingdom cannot be restored, nor can the dead be revived.", " If you can provoke your enemy’s anger, you can make him lose his composure. Pretend to be weak, so he will become overconfident.", " In war, deception is your ally and you will prevail.", " If the enemy exposes a weakness, you must exploit it.", " We cannot form alliances until we know the plans of our neighbors.", " The seasoned soldier is always prepared and confident; he knows what to do before and after the battle.", " If you know your enemy and yourself, your victory is certain.", " The leader who excels in defense is hidden and secure; the leader who excels in attack is swift and surprising.", " The supreme leader follows the moral law, and adheres to method and discipline; thus he has the power to control success.", " Fake disorder implies perfect order; fake fear implies courage; fake weakness implies strength.", " Whoever arrives first and waits for the enemy, will be ready for the fight; whoever arrives second and rushes to battle, will be weary and exhausted.", " The quality of decision is like the swift strike of a falcon that destroys its prey."," Subdue your enemy without fighting.", " Deceive your enemy in warfare.", " Keep your plans secret and strike like lightning.", " Adapt to the situation and you will find the way to victory.", " Do not let fear hold you back from your destiny.", " If you seek more wisdom, do not hesitate to ask.", " I have learned much from this world.", " I trust that you will discover many secrets in due time.", " The best teacher is experience. Go and explore the wonders of this world! You will encounter many challenges and opportunities.", " ", " Flow like water and adjust to the terrain you face.", " Achieve success by aligning yourself with the enemy’s intentions.", " Harness your energy and release it at the right moment.", " Emotions are fleeting, but consequences are lasting. A ruined kingdom cannot be restored, nor can the dead be revived.", " If you can provoke your enemy’s anger, you can make him lose his composure. Pretend to be weak, so he will become overconfident.", " In war, deception is your ally and you will prevail.", " If the enemy exposes a weakness, you must exploit it.", " We cannot form alliances until we know the plans of our neighbors.", " The seasoned soldier is always prepared and confident; he knows what to do before and after the battle.", " If you know your enemy and yourself, your victory is certain.", " The leader who excels in defense is hidden and secure; the leader who excels in attack is swift and surprising.", " The supreme leader follows the moral law, and adheres to method and discipline; thus he has the power to control success.", " Fake disorder implies perfect order; fake fear implies courage; fake weakness implies strength.", " Whoever arrives first and waits for the enemy, will be ready for the fight; whoever arrives second and rushes to battle, will be weary and exhausted.", " The quality of decision is like the swift strike of a falcon that destroys its prey."," The universe is made of matter that makes us and light that sustains us.", " Dark energy rules the universe and it is expanding every day.", " Only 5% of the universe is made of atoms.", " Nearly three fourths of the universe is dark energy.", " In the midst of chaos, there is also opportunity.", " Quasars are the brightest objects in the universe. They are powered by supermassive black holes that devour matter and emit enormous amounts of energy.", " Pulsars are rapidly spinning neutron stars that emit beams of radiation like cosmic lighthouses. They can be used as precise clocks to measure time and space.", " Magnetars are a rare type of neutron star with extremely powerful magnetic fields. They can generate intense bursts of gamma rays and x-rays that can affect the whole galaxy.", " Black holes are regions of space where gravity is so strong that nothing can escape, not even light. They can warp space and time around them and create gravitational waves.", " Planets are celestial bodies that orbit a star and have enough mass to be spherical and clear their neighborhood of other objects. There are eight planets in our solar system, each with unique features and characteristics.", " Stars are massive balls of plasma that shine by nuclear fusion in their cores. They come in different sizes, colors, temperatures, and lifetimes. Our sun is a medium-sized yellow star that has been burning for about 4.6 billion years.", " Dwarf stars are small stars that have low mass and luminosity. They can be white, red, or brown, depending on their temperature and composition. White dwarfs are the remnants of dead stars that have shed their outer layers. Red dwarfs are the most common type of star in the galaxy and can live for trillions of years. Brown dwarfs are failed stars that never ignited fusion in their cores.", " The force which binds us to the Earth is gravity, which is proportional to the product of our mass and the Earth’s mass, and inversely proportional to the square of the distance between our centers.", " The revolution of the Moon around the Earth is due to gravity, which provides the centripetal force that keeps the Moon in its orbit.", " The revolution of planets around the Sun is also due to gravity, which balances the tangential velocity of the planets and prevents them from flying away.", " Tide arising due to the Moon and the Sun is caused by gravity, which varies with distance and creates a difference in gravitational pull on different parts of the Earth.", " Newton’s law of universal gravitation is a general physical law derived from empirical observations by Isaac Newton. It states that every particle attracts every other particle in the universe with a force that is proportional to the product of their masses and inversely proportional to the square of the distance between their centers.", " Newton’s law of universal gravitation has been superseded by Albert Einstein’s theory of general relativity, but it still continues to be used as an excellent approximation of the effects of gravity in most applications."," The universe is made of matter that makes us and light that sustains us.",
+	" Dark energy rules the universe and it is expanding every day.",
+	" Only 5% of the universe is made of atoms." ,
+	" Nearly three fourths of the universe is dark energy.",
+	" In the midst of chaos, there is also opportunity.",
+	" Quasars are the brightest objects in the universe. They are powered by supermassive black holes that devour matter and emit enormous amounts of energy.", " Pulsars are rapidly spinning neutron stars that emit beams of radiation like cosmic lighthouses. They can be used as precise clocks to measure time and space.", " Magnetars are a rare type of neutron star with extremely powerful magnetic fields. They can generate intense bursts of gamma rays and x-rays that can affect the whole galaxy.", " Black holes are regions of space where gravity is so strong that nothing can escape, not even light. They can warp space and time around them and create gravitational waves.", " Planets are celestial bodies that orbit a star and have enough mass to be spherical and clear their neighborhood of other objects. There are eight planets in our solar system, each with unique features and characteristics.", " Stars are massive balls of plasma that shine by nuclear fusion in their cores. They come in different sizes, colors, temperatures, and lifetimes. Our sun is a medium-sized yellow star that has been burning for about 4.6 billion years.", " Dwarf stars are small stars that have low mass and luminosity. They can be white, red, or brown, depending on their temperature and composition. White dwarfs are the remnants of dead stars that have shed their outer layers. Red dwarfs are the most common type of star in the galaxy and can live for trillions of years. Brown dwarfs are failed stars that never ignited fusion in their cores."," The universe is all of space and time and their contents, including planets, stars, galaxies, and all other forms of matter and energy. The Big Bang theory is the prevailing cosmological description of the development of the universe. According to this theory, space and time emerged together 13.787±0.020 billion years ago, and the universe has been expanding ever since the Big Bang."," While the spatial size of the entire universe is unknown, it is possible to measure the size of the observable universe, which is approximately 93 billion light-years in diameter at the present day."," Some of the earliest cosmological models of the universe were developed by ancient Greek and Indian philosophers and were geocentric, placing Earth at the center."," Over the centuries, more precise astronomical observations led Nicolaus Copernicus to develop the heliocentric model with the Sun at the center of the Solar System. In developing the law of universal gravitation, Isaac Newton built upon Copernicus's work as well as Johannes Kepler's laws of planetary motion and observations by Tycho Brahe."," Further observational improvements led to the realization that the Sun is one of a few hundred billion stars in the Milky Way, which is one of a few hundred billion galaxies in the observable universe. Many of the stars in a galaxy have planets. At the largest scale, galaxies are distributed uniformly and the same in all directions, meaning that the universe has neither an edge nor a center. At smaller scales, galaxies are distributed in clusters and superclusters which form immense filaments and voids in space, creating a vast foam-like structure. Discoveries in the early 20th century have suggested that the universe had a beginning and that space has been expanding since then at an increasing rate."," According to the Big Bang theory, the energy and matter initially present have become less dense as the universe expanded. After an initial accelerated expansion called the inflationary epoch at around 10−32 seconds, and the separation of the four known fundamental forces, the universe gradually cooled and continued to expand, allowing the first subatomic particles and simple atoms to form. Dark matter gradually gathered, forming a foam-like structure of filaments and voids under the influence of gravity. Giant clouds of hydrogen and helium were gradually drawn to the places where dark matter was most dense, forming the first galaxies, stars, and everything else seen today."," From studying the movement of galaxies, it has been discovered that the universe contains much more matter than is accounted for by visible objects; stars, galaxies, nebulas and interstellar gas. This unseen matter is known as dark matter (dark means that there is a wide range of strong indirect evidence that it exists, but we have not yet detected it directly). The ΛCDM model is the most widely accepted model of the universe. It suggests that about 69.2%±1.2% of the mass and energy in the universe is dark energy which is responsible for the acceleration of the expansion of space, and about 25.8%±1.1% is dark matter. Ordinary ('baryonic') matter is therefore only 4.84%±0.1% of the physical universe. Stars, planets, and visible gas clouds only form about 6% of the ordinary matter."," There are many competing hypotheses about the ultimate fate of the universe and about what, if anything, preceded the Big Bang, while other physicists and philosophers refuse to speculate, doubting that information about prior states will ever be accessible. Some physicists have suggested various multiverse hypotheses, in which our universe might be one among many universes that likewise exist."," The physical universe is defined as all of space and time (collectively referred to as spacetime) and their contents. Such contents comprise all of energy in its various forms, including electromagnetic radiation and matter, and therefore planets, moons, stars, galaxies, and the contents of intergalactic space.","The universe also includes the physical laws that influence energy and matter, such as conservation laws, classical mechanics, and relativity."," The universe is often defined as the totality of existence, or everything that exists, everything that has existed, and everything that will exist. In fact, some philosophers and scientists support the inclusion of ideas and abstract concepts—such as mathematics and logic—in the definition of the universe. The word universe may also refer to concepts such as the cosmos, the world, and nature."," One of the most important principles underlying quantum physics is that of wave-particle duality. Quantum objects have both particle-like properties (such as mass, charge, and energy) and wave-like properties (such as wavelength and frequency). We can see this when we observe light traveling through a prism"," Another key principle is Heisenberg’s uncertainty principle, which states that there are limits to how accurately the value of a physical quantity can be predicted prior to its measurement, given a complete set of initial conditions. For example, we cannot know both the position and momentum of an electron with absolute precision. The more we know about one, the less we know about the other"," A third principle over quantum mechanics is overlap, which means that quantum objects can exist in more than one state at the same time, until they are measured. For example, an electron can be in two different orbitals around an atom, or a photon can be both horizontally and vertically polarized. This is described by a mathematical entity called the wave function, which provides information about the probability of finding the object in different states.",
+	" A fourth principle is quantum entanglement, which means that two or more quantum objects can share a quantum state and influence each other, even when they are far apart. For example, two photons can be entangled such that measuring the polarization of one will instantly reveal the polarization of the other, regardless of the distance between them. This phenomenon has been called spooky action at a distance by Albert Einstein.",
+	" Wave-particle duality principle states that quantum objects, such as electrons and photons, have both particle-like and wave-like properties. This means that they can behave like discrete units of matter or energy, or like waves that can interfere and diffract.",
+	" One way to demonstrate wave-particle duality principle is by using the double-slit experiment. In this experiment, a beam of light or a stream of electrons is directed at a screen with two narrow slits. If the light or electrons were only particles, we would expect to see two bright spots on a detector behind the screen, corresponding to the two slits. However, what we actually observe is an interference pattern, with alternating bright and dark bands. This shows that the light or electrons have passed through both slits at the same time, as waves, and interfered with each other. However, if we try to measure which slit each photon or electron goes through, by placing a detector at each slit, we find that the interference pattern disappears. Instead, we see two bright spots again, as if the light or electrons were only particles. This shows that the act of measurement affects the behavior of the quantum objects, and collapses their wave function into a definite state.",
+	" Wave-particle duality principle demonstrates how quantum objects can exhibit both particle-like and wave-like properties, depending on how they are observed. This principle challenges our classical intuition and reveals the nature of reality at the smallest scales.",
+	" Heisenberg’s uncertainty principle states that there are limits to how accurately the value of a physical quantity can be predicted prior to its measurement, given a complete set of initial conditions. For example, we cannot know both the position and momentum of an electron with absolute precision. The more we know about one, the less we know about the other.",
+	" Heisenberg’s uncertainty principle  is not because of any limitations of our instruments or methods, but because of the intrinsic nature of quantum objects. They do not have definite values for their properties until they are measured. Instead, they exist in a superposition of possible states, each with a certain probability. The wave function describes these probabilities, and when we measure a property, we collapse the wave function into one of the possible outcomes.",
+	" Heisenberg’s uncertainty principle tells us how much information we can gain from a measurement, and how much we have to lose. It is often expressed as an inequality, which relates the uncertainties in two complementary properties, such as position and momentum, or energy and time. The product of these uncertainties cannot be lower than a certain constant, called Planck’s constant.",
+	" With Heisenberg’s uncertainty principle the same trade-off applies to quantum measurements. If we measure the position of an electron with high precision, we disturb its momentum and introduce uncertainty in its velocity. If we measure the momentum of an electron with high precision, we disturb its position and introduce uncertainty in its location. We cannot measure both properties with arbitrary accuracy at the same time.",
+	" Quantum 3rd principle of overlap which means that quantum objects can exist in more than one state at the same time, until they are measured. For example, an electron can be in two different orbitals around an atom, or a photon can be both horizontally and vertically polarized.",
+	" Quantum 3rd principle of overlap is possible because quantum objects are described by wave functions, which are mathematical expressions that represent the probability of finding the object in different states. The wave function can be a combination of two or more basis states, which are the simplest possible states that the object can have. For example, the basis states for an electron’s spin can be up or down, and the basis states for a photon’s polarization can be horizontal or vertical.",
+	" Concerning the quantum 3rd principle of overlap when the wave function is a combination of two or more basis states, it is called a superposition. This means that the object has some probability of being in each of the basis states, but not in any definite state. For example, an electron can have a 50% chance of being spin up and a 50% chance of being spin down, but not a definite spin value. A photon can have a 50% chance of being horizontally polarized and a 50% chance of being vertically polarized, but not a definite polarization.",
+	" Quantum 3rd principle of overlap is why when we measure a property of a quantum object, such as its spin or polarization, we collapse the wave function into one of the basis states. This means that we force the object to choose one of the possible outcomes, and we lose the information about the other outcomes. For example, if we measure the spin of an electron and find it to be up, we no longer know what its spin was before the measurement. If we measure the polarization of a photon and find it to be horizontal, we no longer know what its polarization was before the measurement.",		
+	" Clouds are collections of water droplets or ice crystals that float in the air. They form when water evaporates from the ground and condenses in the cooler air.",
+	" Clouds can be very heavy and move fast with the wind and the jet stream. Clouds reflect the light of the sun and make it white. Clouds can also create different types of precipitation, such as rain, snow, hail, or sleet, depending on the temperature.",
+	" Clouds generally form within the troposphere, or the layer of atmosphere closest to the earth. As they rise and fall, they may appear in infinite variations. Scientists have established three broad categories into which most clouds can be grouped: high clouds, mid-level clouds, and low clouds.",
+	" Within each of these three tiers, scientists further organize clouds into ten broad categories based on the general shapes the clouds take are cirrus, cirrostratus, cirrocumulus, altocumulus, altostratus, nimbostratus, stratocumulus, stratus, cumulus, and cumulonimbus.",
+	" Clouds are important for many reasons. Rain and snow are two of those reasons. At night, clouds reflect heat and keep the ground warmer. During the day, clouds make shade that can keep us cooler. Studying clouds helps NASA better understand Earth’s weather.",
+	" Certain types of clouds produce precipitation. Clouds also produce the bolt of electricity called lightning and the sound of thunder that accompanies it. Lightning is formed in a cloud when positively charged particles and negatively charged particles are separated, forming an electrical field.",
+	" Classical mechanics is the study of the motion of macroscopic objects under the influence of forces, such as gravity, friction, and tension. It includes topics such as kinematics, dynamics, statics, work, energy, momentum, rotation, oscillation, and fluid mechanics.",
+	" Thermodynamics: the study of the relationships between heat, temperature, pressure, volume, and entropy in systems of matter and energy. It includes topics such as the laws of thermodynamics, heat transfer, phase transitions, thermal equilibrium, and statistical mechanics.",
+	" Electromagnetism: the study of the electric and magnetic fields and forces generated by electric charges and currents. It includes topics such as electrostatics, magnetostatics, electrodynamics, Maxwell’s equations, electromagnetic waves, optics, and relativity.",
+	" Quantum mechanics: the study of the behavior of matter and energy at the atomic and subatomic levels. It includes topics such as wave-particle duality, uncertainty principle, Schrödinger equation, quantum states, superposition principle, entanglement, tunneling effect, and quantum field theory.",
+	" Relativity: the study of the effects of relative motion and gravity on space-time and matter-energy. It includes topics such as special relativity"," Special relativity is the theory of inertial frames of reference."," General relativity is the theory of gravitational fields."," Length contraction is the shortening of lengths in motion or in gravitational fields."," Mass-energy equivalence is the equivalence between mass and energy."," Gravitational redshift is the shift in frequency of light due to gravity."," Gravitational lensing the bending of light due to gravity."," Black holes are the regions of space-time where gravity is so strong that nothing can escape."," Gravitational waves are ripples in space-time caused by accelerating masses."," Cosmology is the study of the origin, structure, evolution, and fate of the universe as a whole."," Cosmology includes topics such as the big bang theory.",
+	" The big bang theory is the model that describes the initial state and expansion of the universe.",
+	" Cosmic inflation is the rapid exponential expansion of space-time in the early universe.",
+	" Cosmic microwave background radiation (the remnant thermal radiation from the early universe.",
+	" Dark matter is the invisible matter that accounts for most of the mass in the universe.",
+	" Dark energy is the mysterious force that causes the accelerated expansion of the universe",
+	" The Cosmological constant is the energy density of empty space.",
+	" The Cosmological horizon is the limit of observable distance in the universe.",
+	" Hubble’s law is the relation between distance and recession velocity of galaxies.",
+	" Cosmic nucleosynthesis is the formation of elements in the early universe.",
+	" Stellar evolution is the life cycle of stars from birth to death.",
+	" Supernovae are the explosive death of massive stars.",
+	" Neutron stars are the dense remnants of supernovae.",
+	" Pulsars are rotating neutron stars that emit beams of radiation.",
+	" Quasars are extremely bright sources of radiation powered by supermassive black holes at the centers of galaxies.",
+	" Galaxy formation and evolution is described as the processes that shape galaxies over time and large-scale structure is the distribution and clustering of matter on cosmic scales.",
+	" The cosmic web is described as the network-like pattern formed by filaments and voids in large-scale structure."
+}
+local inquiry={	"How can I help you?","How can I assist you?",
+	"What do you want to know?","What are you interested in learning?",
+	"What are you curious about?","What sparks your curiosity?",
+	"What is on your mind?","What are you thinking about?",
+	"What is bothering you?","What is challenging you?",
+	"What do you need clarification on?","What do you want to understand better?",
+	"What are you wondering about?"	,"What are you exploring?",
+	"What is your inquiry?","What is your topic of interest?",
+	"What is your concern?","What do you want to know?",
+	"What is your problem?"}
+local IDK={"I don’t know much about that topic… However, I can share this with you",
+	"That’s not my area of expertise… But I have something else to tell you",
+	"I’m not very familiar with that subject… However, I want to say this to you",
+	"That’s beyond my knowledge… But I have something interesting to share with you",
+	"I can’t comment on that… However, I’d like to tell you this",
+	"I'm afraid I do not have much to say on that... But let me tell you this"}
+local blacklistwords={"were" ,"we're" ,"we?" ,"when" ,"how" ,"where" ,"do" ,"more" ,"about" ,"tell" ,"me" ,"what" ,"is" ,"a" ,"the" ,"of" ,"i" ,"how" ,"we" ,"us" ,"their" ,"them" ,"you" ,"dark" ,"if" ,"there" ,"have" ,"many" ,"one" ,"important" ,"situation" ,"but" ,"can" ,"think" ,"wondering" ,"i'm" ,"im" ,"and" ,"an" ," " ,"thinking" ,"your" ,"hear" ,"else" ,"have" ,"things" ,"few" ,"or" ,"any" , "be" , "use", "made" , "may" , "give" 
+	, "help" , "came" , "show"
+	, "does" , "must" , "went" 
+	, "need" , "try"  , "found"
+	, "should" , "add" , "keep"
+	, "start" , "saw" , "turn" 
+	, "might" , "close" , "seem" 
+	, "open" , "begin" , "got" 
+	, "began" , "grow" , "took" 
+	, "carry" , "hear" , "stop" , "miss" ,"are"}
+
+local checkcontext=false
+local function splitString(str)
+	local words = {}
+	for word in str:gmatch("%w+") do -- %w+ matches one or more alphanumeric characters
+		table.insert(words, word) -- insert the word into the words array
+	end
+	return words
+end	
+
+local function countKeyword(str, keyword)
+	local count = 0
+	for _, word in ipairs(splitString(str)) do
+		if word:lower() == keyword:lower() or word:lower().."?" == keyword:lower() or word:lower() == keyword:lower().."." or word:lower().."." == keyword:lower() or word:lower().."'s" == keyword:lower() or word:lower() == keyword:lower().."'s" then -- compare the words in lowercase
+			count = count + 1 -- increment the count if there is a match
+		end
+	end
+	return count
+end
+local function findBestMatch(strings, keyword)
+	local bestMatch = nil -- the best match string
+	local bestCount = 0 -- the highest count of keyword occurrences
+	for _, str in ipairs(strings) do -- loop through the strings in the table
+		local check=false
+		for _, blkl in ipairs(blasklist) do 
+			if str==blkl then
+				check=true
+			end
+		end
+		if check==false then
+			local count = countKeyword(str, keyword) -- get the count of keyword occurrences in the string
+			if count > bestCount then -- if the count is higher than the best count so far
+				bestMatch = str -- update the best match string
+				bestCount = count -- update the best count number
+			end
+		end	
+	end
+	return bestMatch, bestCount -- return the best match and its count
+end
+
+
+local function SearchQuery(query, database)
+	local words = splitString(query) -- Split the query into words using your splitString function
+	local matches = {} -- A table to store the matches and their scores
+	
+	for _, word in ipairs(words) do -- Loop through the words in the query
+		--Blacklist a bunch of nouns and non context wwords.
+		if word~=nil then
+			local BlacklistedKeyword = table.find(blacklistwords, word)
+			if not BlacklistedKeyword then
+			local bestMatch, bestCount = findBestMatch(database, word) -- Find the best match and its count for each word using your findBestMatch function
+			if bestMatch then -- If there is a match
+				if matches[bestMatch] then -- If the match is already in the table
+					matches[bestMatch] = matches[bestMatch] + bestCount -- Add the count to its score
+				else -- If the match is not in the table yet
+					matches[bestMatch] = bestCount -- Set its score to the count
+				end
+				end	
+				end
+		end
+	end
+	local sortedMatches = {} -- A table to store the sorted matches by their scores
+	for match, score in pairs(matches) do -- Loop through the matches and their scores
+		table.insert(sortedMatches, {match = match, score = score}) -- Insert each match and its score as a subtable into the sortedMatches table
+	end
+	table.sort(sortedMatches, function(a, b) return a.score > b.score end) -- Sort the sortedMatches table by the score field in descending order
+	local result = nil -- The result string to return
+	if #sortedMatches > 0 then -- If there is at least one match
+
+		--result = "The best match(es) for '" .. query .. "' are:\n" -- Start the result string with an introduction
+		for i = 1, math.min(#sortedMatches, 3) do -- Loop through the top three matches or less if there are not enough matches
+			result =  sortedMatches[i].match
+
+			--.. " (Score: " .. sortedMatches[i].score .. ")\n" -- Append each match and its score to the result string
+		end
+		context=context+1
+		table.insert(blasklist,result)
+		--result=sortedMatches[math.random(1,math.min(#sortedMatches, 3))]
+	else -- If there are no matches
+		result=nil
+		--result = "Sorry, I couldn't find any match for '" .. query .. "' in the database." -- Set the result string to an error message
+	end
+	return result
+	-- Return the result string
+end
+local function RepetitiveSearchQuery(query, database)
+	local words = splitString(query) -- Split the query into words using your splitString function
+	local matches = {} -- A table to store the matches and their scores
+	for _, word in ipairs(words) do -- Loop through the words in the query
+		if word~=nil then
+			local bestMatch, bestCount = findBestMatch(database, word) -- Find the best match and its count for each word using your findBestMatch function
+			if bestMatch then -- If there is a match
+				if matches[bestMatch] then -- If the match is already in the table
+					matches[bestMatch] = matches[bestMatch] + bestCount -- Add the count to its score
+				else -- If the match is not in the table yet
+					matches[bestMatch] = bestCount -- Set its score to the count
+				end
+			end	
+		end
+	end
+	local sortedMatches = {} -- A table to store the sorted matches by their scores
+	for match, score in pairs(matches) do -- Loop through the matches and their scores
+		table.insert(sortedMatches, {match = match, score = score}) -- Insert each match and its score as a subtable into the sortedMatches table
+	end
+	table.sort(sortedMatches, function(a, b) return a.score > b.score end) -- Sort the sortedMatches table by the score field in descending order
+	local result = nil -- The result string to return
+	if #sortedMatches > 0 then -- If there is at least one match
+
+		--result = "The best match(es) for '" .. query .. "' are:\n" -- Start the result string with an introduction
+		for i = 1, math.min(#sortedMatches, 3) do -- Loop through the top three matches or less if there are not enough matches
+			result =  sortedMatches[i].match
+
+			--.. " (Score: " .. sortedMatches[i].score .. ")\n" -- Append each match and its score to the result string
+		end
+		--table.insert(blasklist,result)
+		--result=sortedMatches[math.random(1,math.min(#sortedMatches, 3))]
+	else -- If there are no matches
+		result=nil
+		--result = "Sorry, I couldn't find any match for '" .. query .. "' in the database." -- Set the result string to an error message
+	end
+	return result
+	-- Return the result string
+end
+local function SearchQueryUnfiltered(query, database)
+	local words = splitString(query) -- Split the query into words using your splitString function
+	local matches = {} -- A table to store the matches and their scores
+	for _, word in ipairs(words) do -- Loop through the words in the query
+		if word~=nil then
+			local bestMatch, bestCount = findBestMatch(database, word) -- Find the best match and its count for each word using your findBestMatch function
+			if bestMatch then -- If there is a match
+				if matches[bestMatch] then -- If the match is already in the table
+					matches[bestMatch] = matches[bestMatch] + bestCount -- Add the count to its score
+				else -- If the match is not in the table yet
+					matches[bestMatch] = bestCount -- Set its score to the count
+				end
+			end	
+		end
+	end
+	local sortedMatches = {} -- A table to store the sorted matches by their scores
+	for match, score in pairs(matches) do -- Loop through the matches and their scores
+		table.insert(sortedMatches, {match = match, score = score}) -- Insert each match and its score as a subtable into the sortedMatches table
+	end
+	table.sort(sortedMatches, function(a, b) return a.score > b.score end) -- Sort the sortedMatches table by the score field in descending order
+	local result = nil -- The result string to return
+	if #sortedMatches > 0 then -- If there is at least one match
+
+		--result = "The best match(es) for '" .. query .. "' are:\n" -- Start the result string with an introduction
+		for i = 1, math.min(#sortedMatches, 3) do -- Loop through the top three matches or less if there are not enough matches
+			result =  sortedMatches[i].match
+
+			--.. " (Score: " .. sortedMatches[i].score .. ")\n" -- Append each match and its score to the result string
+		end
+		table.insert(blasklist,result)
+		--result=sortedMatches[math.random(1,math.min(#sortedMatches, 3))]
+	else -- If there are no matches
+		result=nil
+		--result = "Sorry, I couldn't find any match for '" .. query .. "' in the database." -- Set the result string to an error message
+	end
+	return result
+	-- Return the result string
+end
+local function randomizeString(str)
+	-- Split the string into sentences
+	local sentences = {}
+	for s in str:gmatch("[^%.]+") do
+		table.insert(sentences, s)
+	end
+	-- Loop through the sentences and replace any matching phrases with a random one from the table
+	local newSentences = {}
+	for i, s in ipairs(sentences) do
+		local newS = s
+		for j, phrases in ipairs(interchangephrases) do
+			for k, phrase in ipairs(phrases) do
+				if s:find(phrase) then
+					-- Pick a random phrase from the same group
+					local randomPhrase = phrases[math.random(#phrases)]
+					-- Replace the original phrase with the random one
+					newS = newS:gsub(phrase, randomPhrase)
+					for i, s in ipairs(splitString(newS)) do
+						local newS = s
+						for j, phrases in ipairs(interchangephrases) do
+							for k, phrase in ipairs(phrases) do
+								if s:find(phrase) then
+									-- Pick a random phrase from the same group
+									local randomPhrase = phrases[math.random(#phrases)]
+									-- Replace the original phrase with the random one
+									newS = newS:gsub(phrase, randomPhrase)
+									break
+								end
+							end
+						end
+						--table.insert(newSentences, newS)
+					end
+					break
+				end
+			end
+		end
+
+		table.insert(newSentences, newS)
+	end
+
+	-- Join the new sentences with periods and return the result
+	return table.concat(newSentences, ".")
+end
+local function CompleteQuery(str,database,filter)
+	-- Split the string into sentences
+	local sentences = {}
+	local Result=nil
+	for s in str:gmatch("[^%.]+") do
+		table.insert(sentences, s)
+	end
+	-- Loop through the sentences and replace any matching phrases with a random one from the table
+	local newSentences = {}
+	if filter==true then
+		Result=SearchQuery(str,database)
+	else
+		Result=SearchQueryUnfiltered(str,database)
+	end
+	if Result==nil then
+		for i, s in ipairs(sentences) do
+			local newS = s
+			if Result==nil then
+				for j, phrases in ipairs(interchangephrases) do
+					if Result==nil then
+						for k, phrase in ipairs(phrases) do
+							if s:find(phrase) and Result==nil then 
+								local combi=0
+								repeat
+									combi=combi+1
+									local randomPhrase = phrases[combi]
+									local newS1 = newS:gsub(phrase, randomPhrase)
+									if filter==true then
+										Result=SearchQuery(newS1,database)
+									else
+										Result=SearchQueryUnfiltered(newS1,database)
+									end
+								until combi>=#phrases or Result~=nil
+								if Result==nil then
+									for i, s in ipairs(splitString(newS)) do
+										local newS = s
+										if Result==nil then
+											for j, phrases in ipairs(interchangephrases) do
+												if Result==nil then					
+													for k, phrase in ipairs(phrases) do
+														if s:find(phrase) and Result==nil then
+															repeat
+																combi=combi+1
+																local randomPhrase = phrases[combi]
+																if randomPhrase~=nil then
+																	local newS1 = newS:gsub(phrase, randomPhrase)
+																	if filter==true then
+																		Result=SearchQuery(newS1,database)
+																	else 
+																		Result=SearchQueryUnfiltered(newS1,database)	
+																	end
+																end	
+															until combi>=#phrases or Result~=nil
+															break
+														end
+													end
+												end
+											end
+										end
+									end
+								end
+								break
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	return Result
+end
+
+function Chat()
+	if script.Parent.Parent:FindFirstChild("ChatBox")~=nil then
+		script.Parent.Parent:FindFirstChild("ChatBox"):Destroy()
+	end	
+
+	local ScreenGui = Instance.new("ScreenGui")
+	ScreenGui.Parent = game:GetService("StarterGui")
+	
+	local Answer="What is you question?"
+	-- Create a Frame object under the ScreenGui
+	local Frame = Instance.new("Frame")
+	Frame.Name="ChatBox"
+	Frame.Parent = script.Parent.Parent
+	Frame.Size = UDim2.new(1, 0,0.6, 0)-- Adjust the size as needed
+	Frame.Position = UDim2.new(0, 0,0, 0) -- Adjust the position as needed
+	Frame.BackgroundColor3 = Color3.new(1, 1, 1) -- Adjust the color as needed
+	Frame.BackgroundTransparency=1
+	-- Create a TextLabel object under the Frame to display the question
+	local QuestionLabel = script.Parent
+	QuestionLabel.Text="What is your question?"
+	local AnswerBox = Instance.new("TextBox")
+	AnswerBox.Parent = Frame
+	AnswerBox.Size = UDim2.new(0.74, 0,0.14, 0) -- Adjust the size as needed
+	AnswerBox.Position = UDim2.new(0.13, 0,0.02, 0) -- Adjust the position as needed
+	AnswerBox.Text = "" -- Leave the text empty initially
+	AnswerBox.TextColor3 = script.Parent.TextColor3-- Adjust the text color as needed
+	AnswerBox.FontFace=script.Parent.FontFace
+	AnswerBox.PlaceholderText="Type your answer here..."	
+	AnswerBox.ZIndex=11
+	AnswerBox.TextScaled = true -- Adjust the text scaling as needed
+	AnswerBox.BackgroundTransparency=1
+	AnswerBox.TextStrokeTransparency=0
+	--AnswerBox.ClearTextOnFocus=fa
+	-- Create a TextButton object under the Frame to allow the user to submit their answer
+	local EnterButton = Instance.new("TextButton")
+	EnterButton.TextColor3 = script.Parent.TextColor3-- Adjust the text color as needed
+	EnterButton.FontFace=script.Parent.FontFace
+	EnterButton.Parent = Frame
+	EnterButton.Size = UDim2.new(0.12, 0,0.1, 20) -- Adjust the size as needed
+	EnterButton.Position = UDim2.new(0.875, 0,1.5, -40) -- Adjust the position as needed
+	EnterButton.Text = "Enter" -- Change the text as needed
+	EnterButton.TextColor3 = Color3.new(1, 1, 1) -- Adjust the text color as needed
+	EnterButton.TextScaled = true -- Adjust the text scaling as needed
+	EnterButton.BackgroundColor3 = Color3.new(0, 0.5, 1) -- Adjust the background color as needed
+	EnterButton.Style="RobloxButton"
+	--local CloseButton=EnterButton:Clone()
+	--CloseButton.Parent=Frame
+	--CloseButton.Position=UDim2.new(0.08, 0,0.6, 0) 
+	--CloseButton.Text="Back"
+	-- Define a function to check if the user's answer is correct and display feedback		
+	local function CheckAnswer(answer)
+		--local answer = AnswerBox.Text -- Get the user's answer from the TextBox
+		local Result	
+		if answer ~="" then -- Change the correct answer as needed	
+
+			Result=	CompleteQuery(answer, Greetings,false)		
+			--	EnterButton.Text = "" -- Change the feedback text as needed
+			--EnterButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Change the feedback color as needed
+		if Result==nil then
+			Result=CompleteQuery(answer,Database,true)
+		end
+		if Result==nil then
+			Result=CompleteQuery(answer,wisdom,true)
+		end
+		if Result==nil and checkcontext==false then
+			
+			checkcontext=true
+			Result=CheckAnswer(blasklist[context])
+			Result=IDK[math.random(1,#IDK)]..Result
+		elseif Result==nil and checkcontext==true then
+			
+			checkcontext=false
+			Result=IDK[math.random(1,#IDK)]..wisdom[math.random(1,#wisdom)]
+			end	
+		
+				return  randomizeString(Result)
+		else 
+			Result=inquiry[math.random(1,#inquiry)]	
+		end	
+		end
+	EnterButton.MouseButton1Click:Connect(function() QuestionLabel.Text =CheckAnswer(AnswerBox.Text) end)
+	AnswerBox.FocusLost:Connect(function() QuestionLabel.Text =CheckAnswer(AnswerBox.Text) end)
+end
+Chat()
