@@ -4,8 +4,7 @@ local interchangephrases
 local context=0
 local checkcontext=false
 local globalrng=Random.new()
-badwords={"album","nazi","nazism","racism","theft","sexual","criminal","crime","felony","misdemeneor",
-	"arson","bombing","terrorism","racist","copyright","infringement","my little pony","holocaust","genocide","hatred","offender","state-law","state law","city code","programming","hey","hi","hello","you","me","greetings"}
+badwords={}
 local blacklist={"none"}--Adds previous response to blacklist for chatmodule.SearchQuery
 local interchangephrases={
 	-- Introductory
